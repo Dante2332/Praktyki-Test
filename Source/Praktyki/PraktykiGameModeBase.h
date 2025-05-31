@@ -13,5 +13,7 @@ UCLASS()
 class PRAKTYKI_API APraktykiGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	APraktykiGameModeBase();
 };

@@ -3,3 +3,9 @@
 
 #include "PraktykiGameModeBase.h"
 
+#include "CarPawn.h"
+
+APraktykiGameModeBase::APraktykiGameModeBase()
+{
+	DefaultPawnClass = ACarPawn::StaticClass();
+}
