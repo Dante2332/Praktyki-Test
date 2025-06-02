@@ -44,9 +44,6 @@ private:
 	UStaticMeshComponent* NetMesh;
 	
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* EngineMesh;
-	
-	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* WindowsMesh;
 	
 	UPROPERTY(EditAnywhere)
@@ -69,21 +66,33 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* HoodMesh;
+		
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* BootMesh;
 	
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* CockpitMesh;
-	
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* LeftDoorMesh;
-	
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* RightDoorMesh;
 	
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* SeatMesh;
 	
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* InteriorMesh;
+	
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* SteeringWheelMesh;
+	
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* AccelerationPedalMesh;
+	
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* BrakePedalMesh;
+	
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* LeftDoorMesh;
+	
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* RightDoorMesh;
 	
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* FrontLeftCaliperMesh;
@@ -125,27 +134,16 @@ private:
 	UStaticMeshComponent* SpoilerMesh;
 	
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* SteeringWheelMesh;
-	
-	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* LeftMirrorMesh;
 	
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* RightMirrorMesh;
 	
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* AccelerationPedalMesh;
-	
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* BrakePedalMesh;
-	
-	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* DiffuserMesh;
-	
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* BootMesh;
 
-	
+
+	void SetupCar();
 	
 
 };
