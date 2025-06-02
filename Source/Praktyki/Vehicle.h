@@ -142,8 +142,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* DiffuserMesh;
 
-
 	void SetupCar();
-	
 
+	void Accelerate(float Value);
+	void Brake(float Value);
+	void Turn(float Value);
 };

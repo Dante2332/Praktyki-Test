@@ -155,3 +155,15 @@ void AVehicle::SetupCar()
 	DiffuserMesh->SetupAttachment(CarBaseMesh, FName("diffuser_back"));
 	
 }
+
+void AVehicle::Accelerate(float Value)
+{
+}
+
+void AVehicle::Brake(float Value)
+{
+}
+
+void AVehicle::Turn(float Value)
+{
+}
