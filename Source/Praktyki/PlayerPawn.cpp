@@ -1,10 +1,10 @@
 // Copyright 2025 Teyon. All Rights Reserved.
 
 
-#include "CarPawn.h"
+#include "PlayerPawn.h"
 
 // Sets default values
-ACarPawn::ACarPawn()
+APlayerPawn::APlayerPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -12,23 +12,22 @@ ACarPawn::ACarPawn()
 }
 
 // Called when the game starts or when spawned
-void ACarPawn::BeginPlay()
+void APlayerPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void ACarPawn::Tick(float DeltaTime)
+void APlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
 // Called to bind functionality to input
-void ACarPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	UEnhancedInputComponent* Input = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 }
 
