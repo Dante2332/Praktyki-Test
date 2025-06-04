@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Vehicle.generated.h"
 
+class UCameraComponent;
+
 UCLASS()
 class PRAKTYKI_API AVehicle : public AActor
 {
@@ -141,6 +143,15 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* DiffuserMesh;
+
+	//Cameras
+	UPROPERTY(EditAnywhere)
+	UCameraComponent* VehicleCamera;
+
+	UPROPERTY(EditAnywhere)
+	TArray<FName> CameraSockets = {
+		"BehindCarGameplayCameraFar","BehindCarGameplayCameraNear", "CarInteriorGameplayCamera", "HoodOnGameplayCamera", "HoodGameplayCamera"
+	};
 
 	void SetupCar();
 

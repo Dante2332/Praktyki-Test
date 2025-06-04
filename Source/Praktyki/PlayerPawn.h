@@ -10,6 +10,8 @@
 #include "GameFramework/Pawn.h"
 #include "PlayerPawn.generated.h"
 
+class AVehicle;
+
 UCLASS()
 class PRAKTYKI_API APlayerPawn : public APawn
 {
@@ -26,5 +28,11 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	
+	UPROPERTY(VisibleAnywhere)
+	AVehicle* ControlledVehicle;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AVehicle> VehicleToSpawn;
+
+	void SpawnVehicle();
+	void SetCamera();
 };

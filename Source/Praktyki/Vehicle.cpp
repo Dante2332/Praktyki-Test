@@ -3,6 +3,8 @@
 
 #include "Vehicle.h"
 
+#include "Camera/CameraComponent.h"
+
 // Sets default values
 AVehicle::AVehicle()
 {
@@ -27,7 +29,7 @@ void AVehicle::Tick(float DeltaTime)
 
 void AVehicle::SetupCar()
 {
-	CarBaseMesh = CreateDefaultSubobject<USkeletalMeshComponent>("CarBase")();
+	CarBaseMesh = CreateDefaultSubobject<USkeletalMeshComponent>("CarBase");
 	RootComponent = CarBaseMesh;
 	
 	MainBodyMesh = CreateDefaultSubobject<UStaticMeshComponent>("MainBody");
@@ -55,16 +57,16 @@ void AVehicle::SetupCar()
 	RightFenderMesh->SetupAttachment(CarBaseMesh, FName("fender_right"));
 	
 	FrontLeftBrakeDiscMesh = CreateDefaultSubobject<UStaticMeshComponent>("FrontLeftBrakeDisc");
-	FrontLeftBrakeDiscMesh->SetupAttachment(CarBaseMesh, FName("wheel_front_right_spin"));
+	FrontLeftBrakeDiscMesh->SetupAttachment(CarBaseMesh, FName("wheel_front_left_spin"));
 	
 	FrontRightBrakeDiscMesh = CreateDefaultSubobject<UStaticMeshComponent>("FrontRightBrakeDisc");
-	FrontRightBrakeDiscMesh->SetupAttachment(CarBaseMesh);
+	FrontRightBrakeDiscMesh->SetupAttachment(CarBaseMesh, FName("wheel_front_right_spin"));
 	
 	RearLeftBrakeDiscMesh = CreateDefaultSubobject<UStaticMeshComponent>("RearLeftBrakeDisc");
-	RearLeftBrakeDiscMesh->SetupAttachment(CarBaseMesh);
+	RearLeftBrakeDiscMesh->SetupAttachment(CarBaseMesh, FName("wheel_back_left_spin"));
 	
 	RearRightBrakeDiscMesh = CreateDefaultSubobject<UStaticMeshComponent>("RearRightBrakeDisc");
-	RearRightBrakeDiscMesh->SetupAttachment(CarBaseMesh);
+	RearRightBrakeDiscMesh->SetupAttachment(CarBaseMesh, FName("wheel_back_right_spin"));
 	
 	HoodMesh = CreateDefaultSubobject<UStaticMeshComponent>("Hood");
 	HoodMesh->SetupAttachment(CarBaseMesh, FName("hood_front"));
@@ -83,18 +85,18 @@ void AVehicle::SetupCar()
 
 	SteeringWheelMesh = CreateDefaultSubobject<UStaticMeshComponent>("SteeringWheel");
 	SteeringWheelMesh->SetupAttachment(CarBaseMesh);
-	SteeringWheelMesh->SetRelativeLocation(FVector(20.f, 32.f, 71.f));
-
+	SteeringWheelMesh->SetRelativeLocation(FVector(21.4f, 30.65f, 71.84f));
+	SteeringWheelMesh->SetRelativeRotation(FRotator(0.f, -17.f, 0.f));
 
 	AccelerationPedalMesh = CreateDefaultSubobject<UStaticMeshComponent>("AccelerationPedal");
 	AccelerationPedalMesh->SetupAttachment(CarBaseMesh);
-	//Ustawić później!!!
 	AccelerationPedalMesh->SetRelativeLocation(FVector(0.f, 24.f, 38.f));
 
 	BrakePedalMesh = CreateDefaultSubobject<UStaticMeshComponent>("BrakePedal");
 	BrakePedalMesh->SetupAttachment(CarBaseMesh);
-	BrakePedalMesh->SetRelativeLocation(FVector(99.5f, 29.5f, 46.5f)); 
-	BrakePedalMesh->SetRelativeRotation(FRotator(180.f, 0.f, 0.f));
+	BrakePedalMesh->SetRelativeLocation(FVector(97.56f, -29.85f, 47.44f)); 
+	BrakePedalMesh->SetRelativeRotation(FRotator(180.f, -50.f, 0.f));
+	
 	
 	LeftDoorMesh = CreateDefaultSubobject<UStaticMeshComponent>("LeftDoor");
 	LeftDoorMesh->SetupAttachment(CarBaseMesh, FName("door_left"));
@@ -131,6 +133,7 @@ void AVehicle::SetupCar()
 	
 	RearLeftWheelMesh = CreateDefaultSubobject<UStaticMeshComponent>("RearLeftWheel");
 	RearLeftWheelMesh->SetupAttachment(CarBaseMesh, FName("wheel_back_left_spin"));
+	
 	RearLeftBlurMesh = CreateDefaultSubobject<UStaticMeshComponent>("RearLeftBlur");
 	RearLeftBlurMesh->SetupAttachment(RearLeftWheelMesh);
 	RearLeftBlurMesh->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
@@ -138,9 +141,10 @@ void AVehicle::SetupCar()
 	RearRightWheelMesh = CreateDefaultSubobject<UStaticMeshComponent>("RearRightWheel");
 	RearRightWheelMesh->SetupAttachment(CarBaseMesh, FName("wheel_back_right_spin"));
 	RearRightWheelMesh->SetRelativeRotation(FRotator(0.f, 0.f, 180.f));
+	
 	RearRightBlurMesh = CreateDefaultSubobject<UStaticMeshComponent>("RearRightBlur");
 	RearRightBlurMesh->SetupAttachment(RearRightWheelMesh);
-	RearRightWheelMesh->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
+	RearRightBlurMesh->SetRelativeRotation(FRotator(90.f, 0.f, 0.f));
 
 	SpoilerMesh = CreateDefaultSubobject<UStaticMeshComponent>("Spoiler");
 	SpoilerMesh->SetupAttachment(CarBaseMesh, FName("spoiler_back"));
@@ -153,6 +157,9 @@ void AVehicle::SetupCar()
 	
 	DiffuserMesh = CreateDefaultSubobject<UStaticMeshComponent>("Diffuser");
 	DiffuserMesh->SetupAttachment(CarBaseMesh, FName("diffuser_back"));
+
+	VehicleCamera = CreateDefaultSubobject<UCameraComponent>("Camera");
+	VehicleCamera->SetupAttachment(CarBaseMesh, FName((CameraSockets[0])));
 	
 }
 
