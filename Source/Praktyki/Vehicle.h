@@ -163,7 +163,7 @@ private:
 	float CurrentSpeed = 0.0f;
 	float AccelerationInput;
 	float AccelerationRate = 500.f;
-	float DecelerationRate = 1.f;
+	float DecelerationRate = 0.1f;
 
 	void UpdateSpeed(float DeltaTime);
 	void MoveForward();

@@ -195,7 +195,7 @@ void AVehicle::UpdateSpeed(float DeltaTime)
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Deceleration");
-		CurrentSpeed = FMath::FInterpTo(CurrentSpeed, 0, DeltaTime, 0.05f);
+		CurrentSpeed = FMath::FInterpTo(CurrentSpeed, 0, DeltaTime, DecelerationRate);
 	}
 
 	FVector ForwardMove = FrontRightWheelMesh->GetForwardVector() * DeltaTime;
