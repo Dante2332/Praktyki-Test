@@ -4,27 +4,14 @@
 #include "Vehicle.h"
 
 #include "Camera/CameraComponent.h"
+#include "Physics/ImmediatePhysics/ImmediatePhysicsShared/ImmediatePhysicsCore.h"
 
-// Sets default values
+
 AVehicle::AVehicle()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+
 	PrimaryActorTick.bCanEverTick = true;
 	SetupCar();
-}
-
-// Called when the game starts or when spawned
-void AVehicle::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void AVehicle::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 
 void AVehicle::SetupCar()
@@ -163,9 +150,22 @@ void AVehicle::SetupCar()
 	
 }
 
+void AVehicle::BeginPlay()
+{
+	Super::BeginPlay();
+	
+}
+
+void AVehicle::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	UpdateSpeed(DeltaTime);
+
+}
+
 void AVehicle::Accelerate(float Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Accelerate");
+	AccelerationInput = Value;
 }
 
 void AVehicle::Brake(float Value)
@@ -183,3 +183,22 @@ void AVehicle::ToggleCamera()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "ToggleCamera");
 }
 
+void AVehicle::UpdateSpeed(float DeltaTime)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Input: %f"), AccelerationInput));
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Current Speed: %f"), CurrentSpeed));
+	if (AccelerationInput > 0)
+	{
+		CurrentSpeed += FMath::Clamp(AccelerationInput * AccelerationRate * DeltaTime, 0.f, MaxSpeed);
+
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Deceleration");
+		CurrentSpeed = FMath::FInterpTo(CurrentSpeed, 0, DeltaTime, 0.05f);
+	}
+
+	FVector ForwardMove = FrontRightWheelMesh->GetForwardVector() * DeltaTime;
+	AddActorWorldOffset(ForwardMove * CurrentSpeed, true);
+	
+}

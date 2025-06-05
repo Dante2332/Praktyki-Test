@@ -27,6 +27,7 @@ protected:
 	virtual void BeginPlay() override;
 
 
+
 private:
 	// Car build
 	UPROPERTY(EditAnywhere)
@@ -156,5 +157,15 @@ private:
 	};
 
 	void SetupCar();
+private:
+	//Car stats
+	float MaxSpeed = 3000.0f;
+	float CurrentSpeed = 0.0f;
+	float AccelerationInput;
+	float AccelerationRate = 500.f;
+	float DecelerationRate = 1.f;
 
+	void UpdateSpeed(float DeltaTime);
+	void MoveForward();
+	void Decelerate();
 };
