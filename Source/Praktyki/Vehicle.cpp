@@ -178,7 +178,7 @@ void AVehicle::Brake(float Value)
 
 void AVehicle::Turn(float Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Turn");
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Turn value: %f"), Value));
 }
 
 void AVehicle::ToggleCamera()
@@ -189,11 +189,11 @@ void AVehicle::ToggleCamera()
 void AVehicle::UpdateSpeed(float DeltaTime)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Input: %f"), AccelerationInput));
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Current Speed: %f"), CurrentSpeed));
 	if (AccelerationInput > 0)
 	{
 		// Accelerate
 		CurrentSpeed = FMath::Clamp(CurrentSpeed + AccelerationInput * AccelerationRate * DeltaTime, 0.f, MaxSpeed);
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Current Speed: %f"), CurrentSpeed));
 
 	}
 	else
