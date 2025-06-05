@@ -170,7 +170,10 @@ void AVehicle::Accelerate(float Value)
 
 void AVehicle::Brake(float Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Brake");
+	if (Value > 0 && AccelerationInput == 0)
+	{
+		CurrentSpeed = FMath::FInterpConstantTo(CurrentSpeed, 0, GetWorld()->GetDeltaSeconds(), BrakeForce);
+	}
 }
 
 void AVehicle::Turn(float Value)
@@ -186,19 +189,21 @@ void AVehicle::ToggleCamera()
 void AVehicle::UpdateSpeed(float DeltaTime)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Input: %f"), AccelerationInput));
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Current Speed: %f"), CurrentSpeed));
 	if (AccelerationInput > 0)
 	{
-		CurrentSpeed += FMath::Clamp(AccelerationInput * AccelerationRate * DeltaTime, 0.f, MaxSpeed);
+		// Accelerate
+		CurrentSpeed = FMath::Clamp(CurrentSpeed + AccelerationInput * AccelerationRate * DeltaTime, 0.f, MaxSpeed);
+	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Current Speed: %f"), CurrentSpeed));
 
 	}
 	else
 	{
+		//Decelerate
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Deceleration");
-		CurrentSpeed = FMath::FInterpTo(CurrentSpeed, 0, DeltaTime, DecelerationRate);
+		CurrentSpeed = FMath::FInterpConstantTo(CurrentSpeed, 0, DeltaTime, DecelerationRate);
 	}
-
+	// Drive
 	FVector ForwardMove = FrontRightWheelMesh->GetForwardVector() * DeltaTime;
 	AddActorWorldOffset(ForwardMove * CurrentSpeed, true);
-	
 }
+
