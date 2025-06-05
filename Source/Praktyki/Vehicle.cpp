@@ -4,7 +4,7 @@
 #include "Vehicle.h"
 
 #include "Camera/CameraComponent.h"
-#include "Physics/ImmediatePhysics/ImmediatePhysicsShared/ImmediatePhysicsCore.h"
+
 
 
 AVehicle::AVehicle()
@@ -146,14 +146,13 @@ void AVehicle::SetupCar()
 	DiffuserMesh->SetupAttachment(CarBaseMesh, FName("diffuser_back"));
 
 	VehicleCamera = CreateDefaultSubobject<UCameraComponent>("Camera");
-	VehicleCamera->SetupAttachment(CarBaseMesh, FName((CameraSockets[0])));
+	VehicleCamera->SetupAttachment(CarBaseMesh, FName((CameraSockets[CurrentCameraSocket])));
 	
 }
 
 void AVehicle::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void AVehicle::Tick(float DeltaTime)
@@ -163,33 +162,42 @@ void AVehicle::Tick(float DeltaTime)
 
 }
 
-void AVehicle::Accelerate(float Value)
+void AVehicle::Accelerate(float InputValue)
 {
-	AccelerationInput = Value;
+	AccelerationInput = InputValue;
 }
 
-void AVehicle::Brake(float Value)
+void AVehicle::Brake(float InputValue)
 {
-	if (Value > 0 && AccelerationInput == 0)
+	if (InputValue > 0 && AccelerationInput == 0)
 	{
 		CurrentSpeed = FMath::FInterpConstantTo(CurrentSpeed, 0, GetWorld()->GetDeltaSeconds(), BrakeForce);
 	}
 }
 
-void AVehicle::Turn(float Value)
+void AVehicle::Turn(float InputValue)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Turn value: %f"), Value));
+	
+	TurnWheels(InputValue);
+	UpdateCarRotation(InputValue);
 }
+
 
 void AVehicle::ToggleCamera()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "ToggleCamera");
+	if (CurrentCameraSocket < CameraSockets.Num() - 1)
+	{
+		CurrentCameraSocket++;
+	} else
+	{
+		CurrentCameraSocket = 0;
+	}
+		
+	VehicleCamera->AttachToComponent(CarBaseMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, CameraSockets[CurrentCameraSocket]);
 }
 
 void AVehicle::UpdateSpeed(float DeltaTime)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Input: %f"), AccelerationInput));
-	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Red, FString::Printf(TEXT("Current Speed: %f"), CurrentSpeed));
 	if (AccelerationInput > 0)
 	{
 		// Accelerate
@@ -199,11 +207,51 @@ void AVehicle::UpdateSpeed(float DeltaTime)
 	else
 	{
 		//Decelerate
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Deceleration");
 		CurrentSpeed = FMath::FInterpConstantTo(CurrentSpeed, 0, DeltaTime, DecelerationRate);
 	}
 	// Drive
-	FVector ForwardMove = FrontRightWheelMesh->GetForwardVector() * DeltaTime;
-	AddActorWorldOffset(ForwardMove * CurrentSpeed, true);
+	FVector ForwardMove = GetActorForwardVector() * DeltaTime * CurrentSpeed;;
+	AddActorWorldOffset(ForwardMove, true);
 }
 
+void AVehicle::UpdateCarRotation(float InputValue)
+{
+	float TurnRate = 45.f;
+	AddActorLocalRotation(FRotator(0.f, InputValue * TurnRate * GetWorld()->GetDeltaSeconds(), 0.f));
+}
+
+
+void AVehicle::TurnWheels(float InputValue)
+{
+	
+	AxlesDistance = FVector(FrontRightWheelMesh->GetComponentLocation() - RearRightWheelMesh->GetComponentLocation()).Size();
+	AxleLength = FVector(FrontRightWheelMesh->GetComponentLocation() - FrontLeftWheelMesh->GetComponentLocation()).Size();
+	float Angle = FMath::Clamp(InputValue, -1.f, 1.f) * 35;
+	float AngleRad = FMath::DegreesToRadians(Angle);
+    Angle = 0.f;
+	float TurnRadius = AxlesDistance/ FMath::Tan(AngleRad);
+	float InnerAngle = FMath::RadiansToDegrees(FMath::Atan(AxlesDistance/ (TurnRadius - (AxleLength / 2))));
+	float OuterAngle = FMath::RadiansToDegrees(FMath::Atan(AxlesDistance / (TurnRadius + (AxleLength / 2))));
+
+	if (InputValue > 0) 
+	{
+		CurrentLeftAngle = FMath::FInterpConstantTo(CurrentLeftAngle, InnerAngle, GetWorld()->GetDeltaSeconds(), SteeringSpeed);
+		CurrentRightAngle = FMath::FInterpConstantTo(CurrentRightAngle, OuterAngle, GetWorld()->GetDeltaSeconds(), SteeringSpeed);
+		FrontLeftWheelMesh->SetRelativeRotation(FRotator(0.f, CurrentLeftAngle, 0.f));
+		FrontRightWheelMesh->SetRelativeRotation(FRotator(0.f, CurrentRightAngle, 180.f));
+	}
+	else if (InputValue < 0)
+	{
+		CurrentLeftAngle = FMath::FInterpConstantTo(CurrentLeftAngle, OuterAngle, GetWorld()->GetDeltaSeconds(), SteeringSpeed);
+		CurrentRightAngle = FMath::FInterpConstantTo(CurrentRightAngle, InnerAngle, GetWorld()->GetDeltaSeconds(), SteeringSpeed);
+		FrontLeftWheelMesh->SetRelativeRotation(FRotator(0.f, CurrentLeftAngle, 0.f));
+		FrontRightWheelMesh->SetRelativeRotation(FRotator(0.f, CurrentRightAngle, 180.f));
+	}
+	else
+	{
+		CurrentLeftAngle = FMath::FInterpConstantTo(CurrentLeftAngle, 0, GetWorld()->GetDeltaSeconds(), SteeringSpeed);
+		CurrentRightAngle = FMath::FInterpConstantTo(CurrentRightAngle, 0, GetWorld()->GetDeltaSeconds(), SteeringSpeed);
+		FrontLeftWheelMesh->SetRelativeRotation(FRotator(0.f, CurrentLeftAngle, 0.f));
+		FrontRightWheelMesh->SetRelativeRotation(FRotator(0.f, CurrentRightAngle, 180.f));
+	}
+}

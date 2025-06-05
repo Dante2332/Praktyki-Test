@@ -61,6 +61,7 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInput->BindAction(AccelerateAction, ETriggerEvent::Completed, this, &APlayerPawn::HandleAcceleration);
 		EnhancedInput->BindAction(BrakeAction, ETriggerEvent::Triggered, this, &APlayerPawn::HandleBrake);
 		EnhancedInput->BindAction(TurnAction, ETriggerEvent::Triggered, this, &APlayerPawn::HandleTurn);
+		EnhancedInput->BindAction(TurnAction, ETriggerEvent::Completed, this, &APlayerPawn::HandleTurn);
 		EnhancedInput->BindAction(CameraAction, ETriggerEvent::Started, this, &APlayerPawn::HandleCamera);
 	}
 }

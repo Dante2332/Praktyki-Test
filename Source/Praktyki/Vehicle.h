@@ -18,9 +18,9 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	void Accelerate(float Value);
-	void Brake(float Value);
-	void Turn(float Value);
+	void Accelerate(float InputValue);
+	void Brake(float InputValue);
+	void Turn(float InputValue);
 	void ToggleCamera();
 	
 protected:
@@ -155,10 +155,11 @@ private:
 	TArray<FName> CameraSockets = {
 		"BehindCarGameplayCameraFar","BehindCarGameplayCameraNear", "CarInteriorGameplayCamera", "HoodOnGameplayCamera", "HoodGameplayCamera"
 	};
-
+	int CurrentCameraSocket = 0;
 	void SetupCar();
 private:
-	//Car stats
+	// Car stats
+
 	float AccelerationInput;
 	float AccelerationRate = 1000.f;
 	float CurrentSpeed = 0.0f;
@@ -166,7 +167,17 @@ private:
 	
 	float DecelerationRate = 300.f;
 	float BrakeForce = 800.f;
-
-
+	
+	float AxlesDistance;
+	float AxleLength;
+	float MaxSteeringAngle = 35.f;
+	float SteeringSpeed = 100.f;
+	float CurrentLeftAngle;
+	float CurrentRightAngle;
+	float CurrentCarRotation;
+	
 	void UpdateSpeed(float DeltaTime);
+	void UpdateCarRotation(float InputValue);
+	void TurnWheels(float InputValue);
+
 };
