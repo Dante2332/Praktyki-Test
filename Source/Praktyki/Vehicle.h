@@ -14,16 +14,18 @@ class PRAKTYKI_API AVehicle : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AVehicle();
 
+	virtual void Tick(float DeltaTime) override;
+
+	void Accelerate(float Value);
+	void Brake(float Value);
+	void Turn(float Value);
+	void ToggleCamera();
+	
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 private:
 	// Car build
@@ -155,7 +157,4 @@ private:
 
 	void SetupCar();
 
-	void Accelerate(float Value);
-	void Brake(float Value);
-	void Turn(float Value);
 };

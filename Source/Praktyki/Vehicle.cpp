@@ -165,12 +165,21 @@ void AVehicle::SetupCar()
 
 void AVehicle::Accelerate(float Value)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Accelerate");
 }
 
 void AVehicle::Brake(float Value)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Brake");
 }
 
 void AVehicle::Turn(float Value)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Turn");
 }
+
+void AVehicle::ToggleCamera()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "ToggleCamera");
+}
+

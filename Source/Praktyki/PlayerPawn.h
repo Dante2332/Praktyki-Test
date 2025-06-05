@@ -4,13 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "InputMappingContext.h"
-#include "InputAction.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "GameFramework/Pawn.h"
 #include "PlayerPawn.generated.h"
 
 class AVehicle;
+class UInputAction;
+
 
 UCLASS()
 class PRAKTYKI_API APlayerPawn : public APawn
@@ -22,12 +21,13 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 	
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
 
 	virtual void BeginPlay() override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
+	// Car setup
 	UPROPERTY(VisibleAnywhere)
 	AVehicle* ControlledVehicle;
 	UPROPERTY(EditAnywhere)
@@ -35,4 +35,26 @@ private:
 
 	void SpawnVehicle();
 	void SetCamera();
+
+
+	//Enhanced Input
+	UPROPERTY(EditAnywhere)
+	UInputMappingContext* DefaultMappingContext;
+	
+	UPROPERTY(EditAnywhere)
+	UInputAction* AccelerateAction;
+
+	UPROPERTY(EditAnywhere)
+	UInputAction* BrakeAction;
+
+	UPROPERTY(EditAnywhere)
+	UInputAction* TurnAction;
+
+	UPROPERTY(EditAnywhere)
+	UInputAction* CameraAction;
+
+	void HandleAcceleration(const FInputActionValue& Value);
+	void HandleBrake(const FInputActionValue& Value);
+	void HandleTurn(const FInputActionValue& Value);
+	void HandleCamera();
 };
