@@ -4,7 +4,7 @@
 #include "Vehicle.h"
 
 #include "Camera/CameraComponent.h"
-
+#include "Components/SphereComponent.h"
 
 
 AVehicle::AVehicle()
@@ -12,12 +12,16 @@ AVehicle::AVehicle()
 
 	PrimaryActorTick.bCanEverTick = true;
 	SetupCar();
+	
+	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereCollision");
+	SphereComp->SetupAttachment(CarBaseMesh);
 }
 
 void AVehicle::SetupCar()
 {
 	CarBaseMesh = CreateDefaultSubobject<USkeletalMeshComponent>("CarBase");
 	RootComponent = CarBaseMesh;
+	CarBaseMesh->SetCollisionObjectType(ECC_Pawn);
 	
 	MainBodyMesh = CreateDefaultSubobject<UStaticMeshComponent>("MainBody");
 	MainBodyMesh->SetupAttachment(CarBaseMesh);
@@ -147,7 +151,7 @@ void AVehicle::SetupCar()
 
 	VehicleCamera = CreateDefaultSubobject<UCameraComponent>("Camera");
 	VehicleCamera->SetupAttachment(CarBaseMesh, FName((CameraSockets[CurrentCameraSocket])));
-	
+
 }
 
 void AVehicle::BeginPlay()
@@ -216,8 +220,11 @@ void AVehicle::UpdateSpeed(float DeltaTime)
 
 void AVehicle::UpdateCarRotation(float InputValue)
 {
-	float TurnRate = 45.f;
-	AddActorLocalRotation(FRotator(0.f, InputValue * TurnRate * GetWorld()->GetDeltaSeconds(), 0.f));
+	if (CurrentSpeed > 0)
+	{
+		float TurnRate = 20.f ;
+		AddActorLocalRotation(FRotator(0.f, InputValue * TurnRate * GetWorld()->GetDeltaSeconds(), 0.f));
+	}
 }
 
 

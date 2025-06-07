@@ -22,16 +22,31 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	
+	void EndRace();
+	void EndLap();
+	void OnLapCrossed();
+	
 	FORCEINLINE void SetIsCounting(bool bNew) { bIsCounting = bNew; }
 
 private:
+	FTimerHandle LapTimerHandle;
+	
 	bool bIsCounting = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int TargetLapCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int CurrentLap;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float CurrentLapTime;
-	float StartLapTime;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float LastLapTime;
+	
+	float CrossLineTime;
 
 	void UpdateLapTime();
 };

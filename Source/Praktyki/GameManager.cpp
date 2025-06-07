@@ -25,3 +25,40 @@ void AGameManager::Tick(float DeltaTime)
 
 }
 
+
+void AGameManager::OnLapCrossed()
+{
+	CrossLineTime = GetWorld()->GetTimeSeconds();
+	if (!bIsCounting)
+	{
+		 GetWorld()->GetTimerManager().SetTimer(LapTimerHandle, this, &AGameManager::UpdateLapTime, GetWorld()->GetDeltaSeconds(), true);
+		bIsCounting = true;
+	}
+	else
+	{
+		EndLap(); 
+	}
+	
+	CurrentLap++;
+	if (CurrentLap > TargetLapCount)
+	{
+		EndRace();
+	}
+}
+
+void AGameManager::UpdateLapTime()
+{
+	CurrentLapTime = GetWorld()->GetTimeSeconds() - CrossLineTime;
+}
+
+void AGameManager::EndRace()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("RaceEnded"));
+}
+
+
+void AGameManager::EndLap()
+{
+	LastLapTime = CurrentLapTime;
+	
+}

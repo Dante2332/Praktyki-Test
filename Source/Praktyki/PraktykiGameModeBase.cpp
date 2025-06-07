@@ -8,4 +8,5 @@
 APraktykiGameModeBase::APraktykiGameModeBase()
 {
 	DefaultPawnClass = APlayerPawn::StaticClass();
+
 }

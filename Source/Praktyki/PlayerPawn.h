@@ -26,7 +26,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-private:
+private:	
 	// Car setup
 	UPROPERTY(VisibleAnywhere)
 	AVehicle* ControlledVehicle;
@@ -53,6 +53,12 @@ private:
 	UPROPERTY(EditAnywhere)
 	UInputAction* CameraAction;
 
+	//UI
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> PlayerWidgetClass;
+	UPROPERTY(EditAnywhere)
+	UUserWidget* PlayerWidget;
+	
 	void HandleAcceleration(const FInputActionValue& Value);
 	void HandleBrake(const FInputActionValue& Value);
 	void HandleTurn(const FInputActionValue& Value);

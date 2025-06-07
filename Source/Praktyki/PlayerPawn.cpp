@@ -6,6 +6,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputAction.h"
+#include "Blueprint/UserWidget.h"
+
 
 // Sets default values
 APlayerPawn::APlayerPawn()
@@ -27,6 +29,10 @@ APlayerPawn::APlayerPawn()
 	BrakeAction = BrakeActionObj.Object;
 	TurnAction = TurnActionObj.Object;
 	CameraAction = ToggleCameraObj.Object;
+
+	// UI init
+	static ConstructorHelpers::FClassFinder<UUserWidget>UserWidgetBPClass(TEXT("/Game/UI/WBP_PlayerUI"));
+	PlayerWidgetClass = UserWidgetBPClass.Class;
 }
 
 // Called when the game starts or when spawned
@@ -35,6 +41,12 @@ void APlayerPawn::BeginPlay()
 	Super::BeginPlay();
 	SpawnVehicle();
 	SetCamera();
+	PlayerWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerWidgetClass);
+	PlayerWidget->AddToViewport();
+	if (PlayerWidget)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Player WIDGET");
+	}
 }
 
 // Called every frame

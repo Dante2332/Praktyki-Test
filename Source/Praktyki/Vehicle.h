@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Vehicle.generated.h"
 
+class USphereComponent;
 class UCameraComponent;
 
 UCLASS()
@@ -29,6 +30,8 @@ protected:
 
 
 private:
+	UPROPERTY(EditAnywhere)
+	USphereComponent* SphereComp;
 	// Car build
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* CarBaseMesh;
@@ -174,8 +177,7 @@ private:
 	float SteeringSpeed = 100.f;
 	float CurrentLeftAngle;
 	float CurrentRightAngle;
-	float CurrentCarRotation;
-	
+
 	void UpdateSpeed(float DeltaTime);
 	void UpdateCarRotation(float InputValue);
 	void TurnWheels(float InputValue);
