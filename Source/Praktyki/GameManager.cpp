@@ -36,7 +36,9 @@ void AGameManager::OnLapCrossed()
 	}
 	else
 	{
-		EndLap(); 
+		GetWorldTimerManager().PauseTimer(LapTimerHandle);
+		EndLap();
+		GetWorldTimerManager().UnPauseTimer(LapTimerHandle);
 	}
 	
 	CurrentLap++;
