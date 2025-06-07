@@ -222,43 +222,47 @@ void AVehicle::UpdateCarRotation(float InputValue)
 {
 	if (CurrentSpeed > 0)
 	{
-		float TurnRate = 20.f ;
-		AddActorLocalRotation(FRotator(0.f, InputValue * TurnRate * GetWorld()->GetDeltaSeconds(), 0.f));
+		AddActorLocalRotation(FRotator(0.f, InputValue * CurrentMaxSteeringAngle * GetWorld()->GetDeltaSeconds(), 0.f));
 	}
 }
 
 
 void AVehicle::TurnWheels(float InputValue)
 {
+	float SpeedFactor = FMath::Clamp(CurrentSpeed / MaxSteeringSpeed, 0.f, 1.f);
+	CurrentMaxSteeringAngle = FMath::Lerp(MaxSteeringAngle, MinSteeringAngle, SpeedFactor);
 	
 	AxlesDistance = FVector(FrontRightWheelMesh->GetComponentLocation() - RearRightWheelMesh->GetComponentLocation()).Size();
 	AxleLength = FVector(FrontRightWheelMesh->GetComponentLocation() - FrontLeftWheelMesh->GetComponentLocation()).Size();
-	float Angle = FMath::Clamp(InputValue, -1.f, 1.f) * 35;
+	float Angle = FMath::Clamp(InputValue, -1.f, 1.f) * CurrentMaxSteeringAngle;;
 	float AngleRad = FMath::DegreesToRadians(Angle);
     Angle = 0.f;
 	float TurnRadius = AxlesDistance/ FMath::Tan(AngleRad);
 	float InnerAngle = FMath::RadiansToDegrees(FMath::Atan(AxlesDistance/ (TurnRadius - (AxleLength / 2))));
 	float OuterAngle = FMath::RadiansToDegrees(FMath::Atan(AxlesDistance / (TurnRadius + (AxleLength / 2))));
 
+	
+
 	if (InputValue > 0) 
 	{
-		CurrentLeftAngle = FMath::FInterpConstantTo(CurrentLeftAngle, InnerAngle, GetWorld()->GetDeltaSeconds(), SteeringSpeed);
-		CurrentRightAngle = FMath::FInterpConstantTo(CurrentRightAngle, OuterAngle, GetWorld()->GetDeltaSeconds(), SteeringSpeed);
+		CurrentLeftAngle = FMath::FInterpConstantTo(CurrentLeftAngle, InnerAngle, GetWorld()->GetDeltaSeconds(), CurrentSteeringSpeed);
+		CurrentRightAngle = FMath::FInterpConstantTo(CurrentRightAngle, OuterAngle, GetWorld()->GetDeltaSeconds(), CurrentSteeringSpeed);
 		FrontLeftWheelMesh->SetRelativeRotation(FRotator(0.f, CurrentLeftAngle, 0.f));
 		FrontRightWheelMesh->SetRelativeRotation(FRotator(0.f, CurrentRightAngle, 180.f));
 	}
 	else if (InputValue < 0)
 	{
-		CurrentLeftAngle = FMath::FInterpConstantTo(CurrentLeftAngle, OuterAngle, GetWorld()->GetDeltaSeconds(), SteeringSpeed);
-		CurrentRightAngle = FMath::FInterpConstantTo(CurrentRightAngle, InnerAngle, GetWorld()->GetDeltaSeconds(), SteeringSpeed);
+		CurrentLeftAngle = FMath::FInterpConstantTo(CurrentLeftAngle, OuterAngle, GetWorld()->GetDeltaSeconds(), CurrentSteeringSpeed);
+		CurrentRightAngle = FMath::FInterpConstantTo(CurrentRightAngle, InnerAngle, GetWorld()->GetDeltaSeconds(), CurrentSteeringSpeed);
 		FrontLeftWheelMesh->SetRelativeRotation(FRotator(0.f, CurrentLeftAngle, 0.f));
 		FrontRightWheelMesh->SetRelativeRotation(FRotator(0.f, CurrentRightAngle, 180.f));
 	}
 	else
 	{
-		CurrentLeftAngle = FMath::FInterpConstantTo(CurrentLeftAngle, 0, GetWorld()->GetDeltaSeconds(), SteeringSpeed);
-		CurrentRightAngle = FMath::FInterpConstantTo(CurrentRightAngle, 0, GetWorld()->GetDeltaSeconds(), SteeringSpeed);
+		CurrentLeftAngle = FMath::FInterpConstantTo(CurrentLeftAngle, 0, GetWorld()->GetDeltaSeconds(), CurrentSteeringSpeed);
+		CurrentRightAngle = FMath::FInterpConstantTo(CurrentRightAngle, 0, GetWorld()->GetDeltaSeconds(), CurrentSteeringSpeed);
 		FrontLeftWheelMesh->SetRelativeRotation(FRotator(0.f, CurrentLeftAngle, 0.f));
 		FrontRightWheelMesh->SetRelativeRotation(FRotator(0.f, CurrentRightAngle, 180.f));
 	}
+
 }

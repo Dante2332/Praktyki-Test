@@ -173,8 +173,11 @@ private:
 	
 	float AxlesDistance;
 	float AxleLength;
-	float MaxSteeringAngle = 35.f;
-	float SteeringSpeed = 100.f;
+	float MinSteeringAngle = 20.f;
+	float MaxSteeringAngle = 40.f;
+	float CurrentMaxSteeringAngle;
+	float MaxSteeringSpeed = 300.f;
+	float CurrentSteeringSpeed = 100.f;
 	float CurrentLeftAngle;
 	float CurrentRightAngle;
 
