@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "GameManager.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRaceEnd);
+
 UCLASS()
 class PRAKTYKI_API AGameManager : public AActor
 {
@@ -14,22 +16,24 @@ class PRAKTYKI_API AGameManager : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AGameManager();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
+	
 	virtual void Tick(float DeltaTime) override;
 	
-	void EndRace();
 	void EndLap();
 	void OnLapCrossed();
+
+	UPROPERTY(BlueprintAssignable)
+	FOnRaceEnd OnRaceEnd;
 	
 	FORCEINLINE void SetIsCounting(bool bNew) { bIsCounting = bNew; }
 
+protected:
+	
+	virtual void BeginPlay() override;
+
+	
 private:
+	
 	FTimerHandle LapTimerHandle;
 	
 	bool bIsCounting = false;
@@ -45,8 +49,13 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	float LastLapTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	float BestLapTime;
 	
 	float CrossLineTime;
+	TArray<float> LapTimes;
 
+	
 	void UpdateLapTime();
 };
