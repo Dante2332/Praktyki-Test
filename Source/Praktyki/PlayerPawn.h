@@ -53,6 +53,12 @@ private:
 	UPROPERTY(EditAnywhere)
 	UInputAction* CameraAction;
 
+	UPROPERTY(EditAnywhere)
+	UInputAction* GearShiftUpAction;
+
+	UPROPERTY(EditAnywhere)
+	UInputAction* GearShiftDownAction;
+
 	//UI
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> PlayerWidgetClass;
@@ -63,4 +69,6 @@ private:
 	void HandleBrake(const FInputActionValue& Value);
 	void HandleTurn(const FInputActionValue& Value);
 	void HandleCamera();
+	void HandleShiftUp();
+	void HandleShiftDown();
 };

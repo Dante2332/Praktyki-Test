@@ -23,12 +23,16 @@ APlayerPawn::APlayerPawn()
 	static ConstructorHelpers::FObjectFinder<UInputAction> BrakeActionObj(TEXT("/Game/EnhancedInput/IA_Brake.IA_Brake"));
 	static ConstructorHelpers::FObjectFinder<UInputAction> TurnActionObj(TEXT("/Game/EnhancedInput/IA_Turn.IA_Turn"));
 	static ConstructorHelpers::FObjectFinder<UInputAction> ToggleCameraObj(TEXT("/Game/EnhancedInput/IA_ToggleCam.IA_ToggleCam"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> ShiftUpObj(TEXT("/Game/EnhancedInput/IA_ShiftUp.IA_ShiftUp"));
+	static ConstructorHelpers::FObjectFinder<UInputAction> ShifftDownObj(TEXT("/Game/EnhancedInput/IA_ShiftDown.IA_ShiftDown"));
 	
 	DefaultMappingContext = InputContextObj.Object;
 	AccelerateAction = AccelerateActionObj.Object;
 	BrakeAction = BrakeActionObj.Object;
 	TurnAction = TurnActionObj.Object;
 	CameraAction = ToggleCameraObj.Object;
+	GearShiftUpAction = ShiftUpObj.Object;
+	GearShiftDownAction = ShifftDownObj.Object;
 
 	// UI init
 	static ConstructorHelpers::FClassFinder<UUserWidget>UserWidgetBPClass(TEXT("/Game/UI/WBP_PlayerUI"));
@@ -75,6 +79,8 @@ void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInput->BindAction(TurnAction, ETriggerEvent::Triggered, this, &APlayerPawn::HandleTurn);
 		EnhancedInput->BindAction(TurnAction, ETriggerEvent::Completed, this, &APlayerPawn::HandleTurn);
 		EnhancedInput->BindAction(CameraAction, ETriggerEvent::Started, this, &APlayerPawn::HandleCamera);
+		EnhancedInput->BindAction(GearShiftUpAction, ETriggerEvent::Started, this, &APlayerPawn::HandleShiftUp);
+		EnhancedInput->BindAction(GearShiftDownAction, ETriggerEvent::Started, this, &APlayerPawn::HandleShiftDown);
 	}
 }
 
@@ -114,4 +120,14 @@ void APlayerPawn::HandleTurn(const FInputActionValue& Value)
 void APlayerPawn::HandleCamera()
 {
 	ControlledVehicle->ToggleCamera();
+}
+
+void APlayerPawn::HandleShiftUp()
+{
+	ControlledVehicle->ShiftUp();
+}
+
+void APlayerPawn::HandleShiftDown()
+{
+	ControlledVehicle->ShiftDown();
 }

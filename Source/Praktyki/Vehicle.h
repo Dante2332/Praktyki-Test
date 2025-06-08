@@ -23,6 +23,8 @@ public:
 	void Brake(float InputValue);
 	void Turn(float InputValue);
 	void ToggleCamera();
+	void ShiftUp();
+	void ShiftDown();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -158,7 +160,9 @@ private:
 	TArray<FName> CameraSockets = {
 		"BehindCarGameplayCameraFar","BehindCarGameplayCameraNear", "CarInteriorGameplayCamera", "HoodOnGameplayCamera", "HoodGameplayCamera"
 	};
+	
 	int CurrentCameraSocket = 0;
+	
 	void SetupCar();
 private:
 	// Car stats
@@ -167,6 +171,7 @@ private:
 	float AccelerationRate = 1000.f;
 	float CurrentSpeed = 0.0f;
 	float MaxSpeed = 4000.0f;
+	float MaxReverseSpeed = 1000.f;
 	
 	float DecelerationRate = 300.f;
 	float BrakeForce = 800.f;
@@ -180,6 +185,11 @@ private:
 	float CurrentSteeringSpeed = 100.f;
 	float CurrentLeftAngle;
 	float CurrentRightAngle;
+
+	bool bIsOnReverse = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	int CurrentGear = 0; // -1 stands for Reverse, 0 for Neutral, 1 for Drive
 
 	void UpdateSpeed(float DeltaTime);
 	void UpdateCarRotation(float InputValue);

@@ -200,22 +200,59 @@ void AVehicle::ToggleCamera()
 	VehicleCamera->AttachToComponent(CarBaseMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, CameraSockets[CurrentCameraSocket]);
 }
 
+void AVehicle::ShiftUp()
+{
+	if (bIsOnReverse && CurrentGear == 0 && CurrentSpeed > 100.f) return;
+	
+	CurrentGear = FMath::Clamp(CurrentGear + 1, -1, 1);
+
+	if (CurrentGear == 1)
+	{
+		bIsOnReverse = false;
+	}
+}
+
+void AVehicle::ShiftDown()
+{
+	if (CurrentGear == 0 && CurrentSpeed > 100.f) return;
+	
+	CurrentGear = FMath::Clamp(CurrentGear - 1, -1, 1);
+	if (CurrentGear == -1)
+	{
+		bIsOnReverse = true;
+	}
+}
+
+
 void AVehicle::UpdateSpeed(float DeltaTime)
 {
-	if (AccelerationInput > 0)
+	if (AccelerationInput > 0 && CurrentGear == 1)
 	{
 		// Accelerate
 		CurrentSpeed = FMath::Clamp(CurrentSpeed + AccelerationInput * AccelerationRate * DeltaTime, 0.f, MaxSpeed);
 
 	}
-	else
+	else if (AccelerationInput > 0 && CurrentGear == -1)
+	{
+		CurrentSpeed = FMath::Clamp(CurrentSpeed + AccelerationInput * AccelerationRate * DeltaTime, 0.f, MaxReverseSpeed);	
+	}
 	{
 		//Decelerate
 		CurrentSpeed = FMath::FInterpConstantTo(CurrentSpeed, 0, DeltaTime, DecelerationRate);
 	}
-	// Drive
-	FVector ForwardMove = GetActorForwardVector() * DeltaTime * CurrentSpeed;;
-	AddActorWorldOffset(ForwardMove, true);
+	
+	if (!bIsOnReverse)
+	{
+		// Drive Forward
+		FVector ForwardMove = GetActorForwardVector() * DeltaTime * CurrentSpeed;;
+		AddActorWorldOffset(ForwardMove, true);
+	}
+	else
+	{
+		// Drive Backwards
+		FVector BackwardMove = GetActorForwardVector() * -1 * DeltaTime * CurrentSpeed;
+		AddActorWorldOffset(BackwardMove, true);
+	}
 }
 
 void AVehicle::UpdateCarRotation(float InputValue)
